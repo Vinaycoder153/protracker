@@ -191,6 +191,8 @@ a {
   box-shadow: 0 0 20px rgba(146, 141, 171, 0.6);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top:20px;
+  margin:10px;
 }
 
 .timer-card:hover {
