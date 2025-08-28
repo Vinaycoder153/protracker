@@ -409,6 +409,66 @@ function processRecurring() {
     }
   });
 }
+// ================= FUTURISTIC PRODUCTIVITY GRAPH =================
+const ctx = document.getElementById("productivityChart").getContext("2d");
+
+// Create a gradient glow
+const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+gradient.addColorStop(0, "rgba(0, 255, 255, 0.8)");
+gradient.addColorStop(1, "rgba(0, 128, 255, 0.2)");
+
+const productivityChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    datasets: [
+      {
+        label: "🔥 Productivity Score",
+        data: [3, 6, 5, 7, 9, 4, 10], // Example productivity data
+        borderColor: "#00ffff",
+        backgroundColor: gradient,
+        borderWidth: 3,
+        fill: true,
+        tension: 0.5, // smooth flowing curves
+        pointBackgroundColor: "#111",
+        pointBorderColor: "#00ffff",
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointHoverBackgroundColor: "#00ffff",
+        pointHoverBorderColor: "#fff",
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: "#00ffff", font: { size: 14 } } },
+      tooltip: {
+        backgroundColor: "#111",
+        borderColor: "#00ffff",
+        borderWidth: 1,
+        titleColor: "#00ffff",
+        bodyColor: "#fff",
+        bodyFont: { size: 14 },
+      },
+    },
+    scales: {
+      x: {
+        ticks: { color: "#00ffff", font: { weight: "bold" } },
+        grid: { color: "rgba(0,255,255,0.2)" },
+      },
+      y: {
+        ticks: { color: "#00ffff", font: { weight: "bold" } },
+        grid: { color: "rgba(0,255,255,0.2)" },
+      },
+    },
+    animation: {
+      duration: 2000,
+      easing: "easeInOutQuart",
+    },
+  },
+});
 
 /* -------------------- Init -------------------- */
 function init() {
