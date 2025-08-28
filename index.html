@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Boostly — Productivity & Scheduling App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar card">
+      <div class="brand">
+        <div class="logo">B</div>
+        <div>
+          <h1>Boostly</h1>
+          <p>Focus • Schedule • Reward</p>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="v" id="points">0</div>
+          <div class="small">Points</div>
+        </div>
+        <div class="stat">
+          <div class="v" id="streak">0</div>
+          <div class="small">Day Streak</div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button class="active" data-view="today">Today</button>
+        <button data-view="all">All Tasks</button>
+        <button data-view="calendar">Calendar</button>
+        <button data-view="pomodoro">Pomodoro</button>
+        <button data-view="rewards">Rewards</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="small">Unlocked</div>
+        <div class="badges" id="badgeList">
+          <!-- badges -->
+        </div>
+      </div>
+
+      <div style="margin-top:14px">
+        <div class="small">Tips</div>
+        <div class="small" style="margin-top:8px">Try scheduling focused work (25m), use recurring tasks & collect points to unlock badges.</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+          <h2 id="viewTitle">Today's Tasks</h2>
+          <div class="small" id="subtitle">Organize, focus & earn rewards</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="search"><input id="search" placeholder="Search tasks or tags..." aria-label="Search tasks or tags" /></div>
+          <button class="btn btn-ghost" id="themeToggle">Theme</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <form id="taskForm">
+          <input id="title" placeholder="Task title — e.g., Finish project report" required  aria-label="Task title" />
+          <input id="due" type="datetime-local" aria-label="Due date" />
+          <select id="repeat" aria-label="Repeat">
+            <option value="none">No repeat</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+          <select id="priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button class="btn btn-primary" id="addBtn">Add Task</button>
+
+          <textarea id="notes" placeholder="Notes (optional)" style="grid-column:1/ -1;margin-top:8px"></textarea>
+        </form>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <h3>Tasks</h3>
+          <div class="small">Filter: <select id="filter"><option value="all">All</option><option value="incomplete">Incomplete</option><option value="completed">Completed</option></select></div>
+        </div>
+        <div class="tasks" id="taskList"></div>
+      </div>
+
+      <div class="card">
+        <h3>Schedule & Progress</h3>
+        <div class="schedule" id="schedulePanel">
+          <div class="mini">
+            <div class="small">Today</div>
+            <div id="todayCount" style="font-weight:700;font-size:20px">0 tasks</div>
+          </div>
+          <div class="mini">
+            <div class="small">This week</div>
+            <div id="weekCount" style="font-weight:700;font-size:20px">0 tasks</div>
+          </div>
+          <div class="mini">
+            <div class="small">Completed</div>
+            <div id="completedCount" style="font-weight:700;font-size:20px">0</div>
+          </div>
+          <div class="mini">
+            <div class="small">Progress</div>
+            <div class="progress" style="margin-top:8px"><i id="progressBar"></i></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
