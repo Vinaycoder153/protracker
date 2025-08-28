@@ -181,6 +181,57 @@ a {
   align-items: center;
 }
 
+/* -------------------- Timer sec -------------------- */
+.timer-card {
+  background: linear-gradient(135deg, #6d28d9, #4f46e5, #06b6d4);
+  color: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px auto;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 1s ease-in-out;
+}
+
+.timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.timer-controls input {
+  padding: 8px;
+  width: 100px;
+  border-radius: 10px;
+  border: none;
+  text-align: center;
+  font-weight: bold;
+}
+
+.timer-controls button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: white;
+  color: #4f46e5;
+  font-weight: bold;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.timer-controls button:hover {
+  transform: scale(1.1);
+  background: #e0e7ff;
+}
+
+.timer-display {
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 /* -------------------- New task form -------------------- */
 form#taskForm {
   display: grid;

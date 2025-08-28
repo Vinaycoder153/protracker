@@ -190,6 +190,49 @@ function editTask(id) {
   removeTask(id);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+/* -------------------- Timer sec -------------------- */
+async function startTimer() {
+  const minutes = parseInt(document.getElementById("timerInput").value);
+  if (!minutes || minutes <= 0) {
+    alert("Enter valid minutes!");
+    return;
+  }
+  const duration = minutes * 60;
+  await fetch("http://127.0.0.1:5000/start", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ duration })
+  });
+}
+
+async function pauseTimer() {
+  await fetch("http://127.0.0.1:5000/pause", { method: "POST" });
+}
+
+async function resetTimer() {
+  await fetch("http://127.0.0.1:5000/reset", { method: "POST" });
+}
+
+async function updateTimer() {
+  try {
+    const res = await fetch("http://127.0.0.1:5000/status");
+    const data = await res.json();
+    const mins = String(Math.floor(data.remaining / 60)).padStart(2, "0");
+    const secs = String(data.remaining % 60).padStart(2, "0");
+    document.getElementById("timerDisplay").textContent = `${mins}:${secs}`;
+
+    // 🎮 Bonus: give streak points when timer ends
+    if (data.remaining === 0 && !data.running) {
+      alert("🎉 Focus session complete! You earned 10 points!");
+      // here you could call your gamification logic to add badges
+    }
+  } catch (err) {
+    console.error("Timer update failed:", err);
+  }
+}
+
+setInterval(updateTimer, 1000);
+
 
 /* -------------------- Views & Render -------------------- */
 function renderSidebar() {
