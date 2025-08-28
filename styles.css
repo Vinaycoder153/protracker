@@ -373,6 +373,7 @@ form textarea {
 .small {
   font-size: 13px;
   color: var(--muted);
+  margin-bottom:25px;
 }
 
 /* -------------------- Animations -------------------- */
