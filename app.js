@@ -190,49 +190,55 @@ function editTask(id) {
   removeTask(id);
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
-/* -------------------- Timer sec -------------------- */
-async function startTimer() {
-  const minutes = parseInt(document.getElementById("timerInput").value);
-  if (!minutes || minutes <= 0) {
+
+// ================== PURE JS TIMER ================== //
+let timerInterval;
+let remaining = 0;
+let isPaused = false;
+
+function startTimer() {
+  const input = document.getElementById("timerInput").value;
+  if (!input || input <= 0) {
     alert("Enter valid minutes!");
     return;
   }
-  const duration = minutes * 60;
-  await fetch("http://127.0.0.1:5000/start", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ duration })
-  });
+
+  if (!isPaused) {
+    remaining = input * 60; // convert to seconds
+  }
+  isPaused = false;
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimer, 1000);
 }
 
-async function pauseTimer() {
-  await fetch("http://127.0.0.1:5000/pause", { method: "POST" });
+function pauseTimer() {
+  isPaused = true;
+  clearInterval(timerInterval);
 }
 
-async function resetTimer() {
-  await fetch("http://127.0.0.1:5000/reset", { method: "POST" });
+function resetTimer() {
+  clearInterval(timerInterval);
+  remaining = 0;
+  isPaused = false;
+  document.getElementById("timerDisplay").textContent = "00:00";
 }
 
-async function updateTimer() {
-  try {
-    const res = await fetch("http://127.0.0.1:5000/status");
-    const data = await res.json();
-    const mins = String(Math.floor(data.remaining / 60)).padStart(2, "0");
-    const secs = String(data.remaining % 60).padStart(2, "0");
+function updateTimer() {
+  if (remaining > 0) {
+    remaining--;
+    const mins = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const secs = String(remaining % 60).padStart(2, "0");
     document.getElementById("timerDisplay").textContent = `${mins}:${secs}`;
-
-    // 🎮 Bonus: give streak points when timer ends
-    if (data.remaining === 0 && !data.running) {
-      alert("🎉 Focus session complete! You earned 10 points!");
-      // here you could call your gamification logic to add badges
-    }
-  } catch (err) {
-    console.error("Timer update failed:", err);
+  } else {
+    clearInterval(timerInterval);
+    document.getElementById("timerDisplay").textContent = "00:00";
+    // 🎉 Add points when session completes
+    const pointsEl = document.getElementById("points");
+    pointsEl.textContent = parseInt(pointsEl.textContent) + 10;
+    alert("🎉 Focus session complete! You earned 10 points!");
   }
 }
-
-setInterval(updateTimer, 1000);
-
 
 /* -------------------- Views & Render -------------------- */
 function renderSidebar() {

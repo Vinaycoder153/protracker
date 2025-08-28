@@ -55,19 +55,36 @@
           </div>
         </div>
 
-        <!-- Timer Section -->
-        <section class="timer-card">
-          <h2>⏳ Focus Timer</h2>
-          <div class="timer-controls">
-            <input type="number" id="timerInput" placeholder="Enter minutes" />
-            <button onclick="startTimer()">▶ Start</button>
-            <button onclick="pauseTimer()">⏸ Pause</button>
-            <button onclick="resetTimer()">⏹ Reset</button>
+        <div class="timer-card">
+          <h2 class="text-lg font-semibold">⏳ Focus Timer</h2>
+          <input
+            id="timerInput"
+            type="number"
+            placeholder="Minutes"
+            class="w-full border p-2 rounded mt-2"
+          />
+          <div class="flex justify-between items-center mt-4">
+            <button
+              onclick="startTimer()"
+              class="bg-green-500 text-white px-3 py-1 rounded"
+            >
+              ▶ Start
+            </button>
+            <button
+              onclick="pauseTimer()"
+              class="bg-yellow-500 text-white px-3 py-1 rounded"
+            >
+              ⏸ Pause
+            </button>
+            <button
+              onclick="resetTimer()"
+              class="bg-red-500 text-white px-3 py-1 rounded"
+            >
+              ⏹ Reset
+            </button>
           </div>
-          <div class="timer-display">
-            <p id="timerDisplay">00:00</p>
-          </div>
-        </section>
+          <div id="timerDisplay" class="text-2xl font-bold mt-4">00:00</div>
+        </div>
       </aside>
 
       <main class="main">

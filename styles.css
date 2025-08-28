@@ -182,55 +182,71 @@ a {
 }
 
 /* -------------------- Timer sec -------------------- */
+/* ================= TIMER STYLING ================= */
 .timer-card {
-  background: linear-gradient(135deg, #6d28d9, #4f46e5, #06b6d4);
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
   color: white;
-  border-radius: 20px;
   padding: 20px;
-  margin: 20px auto;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(146, 141, 171, 0.6);
   text-align: center;
-  width: 300px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  animation: fadeIn 1s ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.timer-controls {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 15px 0;
+.timer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(146, 141, 171, 0.9);
 }
 
-.timer-controls input {
-  padding: 8px;
-  width: 100px;
-  border-radius: 10px;
-  border: none;
-  text-align: center;
-  font-weight: bold;
-}
-
-.timer-controls button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  background: white;
-  color: #4f46e5;
-  font-weight: bold;
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-
-.timer-controls button:hover {
-  transform: scale(1.1);
-  background: #e0e7ff;
-}
-
-.timer-display {
-  font-size: 2em;
-  font-weight: bold;
+#timerInput {
+  width: 100%;
+  padding: 10px;
   margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  outline: none;
 }
+
+#timerInput::placeholder {
+  color: #ddd;
+}
+
+.timer-card button {
+  flex: 1;
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+
+.timer-card button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+#timerDisplay {
+  margin-top: 15px;
+  font-size: 36px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: #fffae3;
+  text-shadow: 0 0 10px #fffae3, 0 0 20px #ff9900;
+  animation: pulse 1.5s infinite alternate;
+}
+
+/* Glow pulse animation for timer */
+@keyframes pulse {
+  from { text-shadow: 0 0 10px #fffae3, 0 0 20px #ff9900; }
+  to { text-shadow: 0 0 20px #fffae3, 0 0 40px #ff3300; }
+}
+
 
 /* -------------------- New task form -------------------- */
 form#taskForm {
