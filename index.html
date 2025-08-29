@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boostly Productivity</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>🚀 Boostly Productivity</h1>
+
+    <!-- Stats -->
+    <div class="stats">
+      <span>⭐ Points: <span id="points">0</span></span>
+      <span>🔥 Streak: <span id="streak">0</span></span>
+      <span>🏆 Level: <span id="level">1</span></span>
+      <div id="progressBar"><div id="progressFill"></div></div>
+      <div id="badges"></div>
+    </div>
+
+    <!-- Task Manager -->
+    <div class="task-manager">
+      <h2>📋 Task Manager</h2>
+      <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter new task..."
+        aria-label="text-input"
+      />
+      <button onclick="addTask()">Add</button>
+      <div id="taskList"></div>
+    </div>
+
+    <!-- Focus Timer -->
+    <div class="focus-timer">
+      <h2>⏳ Focus Timer</h2>
+      <div id="timer">25:00</div>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <!-- Productivity Chart -->
+    <div class="chart-section">
+      <h2>📈 Weekly Productivity</h2>
+      <canvas id="productivityChart"></canvas>
+    </div>
+
+    <!-- Sounds -->
+    <audio
+      id="sound-complete"
+      src="https://assets.mixkit.co/sfx/download/mixkit-game-level-completed-2059.wav"
+    ></audio>
+    <audio
+      id="sound-levelup"
+      src="https://assets.mixkit.co/sfx/download/mixkit-extra-bonus-in-a-video-game-2045.wav"
+    ></audio>
+    <audio
+      id="sound-delete"
+      src="https://assets.mixkit.co/sfx/download/mixkit-retro-arcade-casino-notification-211.wav"
+    ></audio>
+    <script src="app.js"></script>
+  </body>
+</html>
