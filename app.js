@@ -21,11 +21,34 @@ function updateStats() {
   badgesDiv.innerHTML = "";
   if (data.streak >= 3)
     badgesDiv.innerHTML += `<span class="badge">🔥 3-Day Streak</span>`;
+  if (data.streak >= 7)
+    badgesDiv.innerHTML += `<span class="badge">🔥 7-Day Streak</span>`;
+  if (data.streak >= 30)
+    badgesDiv.innerHTML += `<span class="badge">🔥 30-Day Streak</span>`;
   if (data.points >= 200)
     badgesDiv.innerHTML += `<span class="badge">💎 200 Points</span>`;
+  if (data.points >= 500)
+    badgesDiv.innerHTML += `<span class="badge">💎 500 Points</span>`;
+  if (data.points >= 1000)
+    badgesDiv.innerHTML += `<span class="badge">💎 1000 Points</span>`;
   if (data.level >= 2)
     badgesDiv.innerHTML += `<span class="badge">⭐ Level 2+</span>`;
-
+  if (data.level >= 5)
+    badgesDiv.innerHTML += `<span class="badge">🌟 Level 5+</span>`;
+  if (data.level >= 10)
+    badgesDiv.innerHTML += `<span class="badge">🏆 Level 10+</span>`;
+  if (data.level >= 20)
+    badgesDiv.innerHTML += `<span class="badge">🏆 Level 20+</span>`;
+  if (data.level >= 30)
+    badgesDiv.innerHTML += `<span class="badge">👑 Level 30+</span>`;
+  if (data.level >= 50)
+    badgesDiv.innerHTML += `<span class="badge">👑 Level 50+</span>`;
+  if (data.level >= 100)
+    badgesDiv.innerHTML += `<span class="badge">💖 Level 100+</span>`;
+  if (data.level >= 200)
+    badgesDiv.innerHTML += `<span class="badge">🚀 Level 200+</span>`;
+  if (data.level >= 500)
+    badgesDiv.innerHTML += `<span class="badge">🎯 Level 500+</span>`;
   saveData();
 }
 
@@ -43,13 +66,40 @@ function addPoints(amount) {
   updateChart();
 }
 
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (data.lastDate === today) return; // already counted today
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (data.lastDate === yesterday.toDateString()) {
+    data.streak++;
+  } else {
+    data.streak = 1;
+  }
+
+  data.lastDate = today;
+}
+
 // ---------------- Task Manager ----------------
 const quotes = [
   "🚀 Keep going, success is near!",
   "💡 Focus today, shine tomorrow.",
   "🔥 Small steps build big results.",
   "🌟 Your effort creates your future.",
-  "💪 Stay strong, you are doing great!"
+  "💪 Stay strong, you are doing great!",
+  "🎯 Every task completed is a win!",
+  "💪 Keep pushing, you are unstoppable",
+  "🌈 Your hard work will pay off!",
+  "🌟 Keep your eyes on the prize!",
+  "💪 Your dreams are within reach!",
+  "🎯 Every day is a new opportunity!",
+  "💪 Keep your focus, you are unstoppable!",
+  "🚀 Your dedication is inspiring!",
+  "🌟 Believe in yourself and all that you are!",
+  "🔥 Success is the sum of small efforts repeated!",
+  "💡 Stay positive, work hard, make it happen!",
 ];
 
 function renderTasks() {
@@ -68,8 +118,8 @@ function renderTasks() {
                     <button onclick="toggleTask(${i})" aria-label="${
           task.done ? "Undo task" : "Mark task as done"
         }">${task.done ? "Undo" : "Done"}</button>
-                    <button onclick="editTask(${i})" aria-label="Edit task">Edit</button>
-                    <button onclick="deleteTask(${i})" aria-label="Delete task">Delete</button>
+                    <button onclick="editTask(${i})" aria-label="Edit task" class="editor">Edit</button>
+                    <button onclick="deleteTask(${i})" aria-label="Delete task" class="delete">Delete</button>
                   </div>
                </div>`;
     taskList.appendChild(taskDiv);
@@ -91,10 +141,12 @@ function toggleTask(i) {
   task.done = !task.done;
   if (task.done) {
     addPoints(20);
+    confettiBurst();
     alert(quotes[Math.floor(Math.random() * quotes.length)]);
   } else data.points -= 20;
   renderTasks();
   updateStats();
+  updateStreak();
 }
 
 function editTask(i) {

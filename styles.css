@@ -108,3 +108,37 @@ button:hover {
   60%  { transform: scale(1.2); opacity: 1; }
   100% { transform: scale(1); }
 }
+
+button.editor {
+  background: linear-gradient(45deg, #ff6a00, #ee0979);
+}
+button.delete {
+  background: linear-gradient(45deg, #ff0000, #990000);
+}
+button.edit {
+  background: linear-gradient(45deg, #00ff00, #009900);
+}
+button.editor:hover {
+  box-shadow: 0 0 20px #ff6a00;
+}
+button.delete:hover {
+  box-shadow: 0 0 20px #ff0000;
+}
+button.edit:hover {
+  box-shadow: 0 0 20px #00ff00;
+}
+@media (max-width: 640px) {
+  body {
+    padding: 10px;
+  }
+  .stats,
+  .task-manager,
+  .focus-timer,
+  .chart-section {
+    width: 90%;
+    padding: 10px;
+  }
+  input {
+    width: 60%;
+  }
+}
