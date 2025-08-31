@@ -20,35 +20,35 @@ function updateStats() {
   let badgesDiv = document.getElementById("badges");
   badgesDiv.innerHTML = "";
   if (data.streak >= 3)
-    badgesDiv.innerHTML += `<span class="badge">🔥 3-Day Streak</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🔥 3-Day Streak</span>`;
   if (data.streak >= 7)
-    badgesDiv.innerHTML += `<span class="badge">🔥 7-Day Streak</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🔥 7-Day Streak</span>`;
   if (data.streak >= 30)
-    badgesDiv.innerHTML += `<span class="badge">🔥 30-Day Streak</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🔥 30-Day Streak</span>`;
   if (data.points >= 200)
     badgesDiv.innerHTML += `<span class="badge">💎 200 Points</span>`;
   if (data.points >= 500)
-    badgesDiv.innerHTML += `<span class="badge">💎 500 Points</span>`;
+    badgesDiv.innerHTML = `<span class="badge">💎 500 Points</span>`;
   if (data.points >= 1000)
-    badgesDiv.innerHTML += `<span class="badge">💎 1000 Points</span>`;
+    badgesDiv.innerHTML = `<span class="badge">💎 1000 Points</span>`;
   if (data.level >= 2)
     badgesDiv.innerHTML += `<span class="badge">⭐ Level 2+</span>`;
   if (data.level >= 5)
-    badgesDiv.innerHTML += `<span class="badge">🌟 Level 5+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🌟 Level 5+</span>`;
   if (data.level >= 10)
-    badgesDiv.innerHTML += `<span class="badge">🏆 Level 10+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🏆 Level 10+</span>`;
   if (data.level >= 20)
-    badgesDiv.innerHTML += `<span class="badge">🏆 Level 20+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🏆 Level 20+</span>`;
   if (data.level >= 30)
-    badgesDiv.innerHTML += `<span class="badge">👑 Level 30+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">👑 Level 30+</span>`;
   if (data.level >= 50)
-    badgesDiv.innerHTML += `<span class="badge">👑 Level 50+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">👑 Level 50+</span>`;
   if (data.level >= 100)
-    badgesDiv.innerHTML += `<span class="badge">💖 Level 100+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">💖 Level 100+</span>`;
   if (data.level >= 200)
-    badgesDiv.innerHTML += `<span class="badge">🚀 Level 200+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🚀 Level 200+</span>`;
   if (data.level >= 500)
-    badgesDiv.innerHTML += `<span class="badge">🎯 Level 500+</span>`;
+    badgesDiv.innerHTML = `<span class="badge">🎯 Level 500+</span>`;
   saveData();
 }
 
@@ -107,10 +107,9 @@ function confettiBurst() {
   confetti({
     particleCount: 120,
     spread: 70,
-    origin: { y: 0.6 }
+    origin: { y: 0.6 },
   });
 }
-
 
 function renderTasks() {
   const taskList = document.getElementById("taskList");
@@ -149,14 +148,21 @@ function addTask() {
 function toggleTask(i) {
   let task = data.tasks[i];
   task.done = !task.done;
+
   if (task.done) {
     addPoints(20);
+    updateStreak();
     confettiBurst();
-    alert(quotes[Math.floor(Math.random() * quotes.length)]);
-  } else data.points -= 20;
+
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    alert("💡 " + randomQuote);
+  } else {
+    data.points = Math.max(0, data.points - 20);
+  }
+
   renderTasks();
   updateStats();
-  updateStreak();
+  saveData();
 }
 
 function editTask(i) {
@@ -175,9 +181,9 @@ function deleteTask(i) {
 }
 
 if ([7, 30, 100].includes(data.streak)) {
-    alert(`🔥 ${data.streak}-Day Streak!`);
-    confettiBurst();
-  }
+  alert(`🔥 ${data.streak}-Day Streak!`);
+  confettiBurst();
+}
 
 // ---------------- Focus Timer ----------------
 let timerunner = false;
