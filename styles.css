@@ -110,10 +110,10 @@ button:hover {
 }
 
 button.editor {
-  background: linear-gradient(45deg, #ff6a00, #ee0979);
+  background: linear-gradient(45deg, #4eebe3, #bf45e4);
 }
 button.delete {
-  background: linear-gradient(45deg, #ff0000, #990000);
+  background: linear-gradient(45deg, #ff0000, #eb1c1c);
 }
 button.edit {
   background: linear-gradient(45deg, #00ff00, #009900);

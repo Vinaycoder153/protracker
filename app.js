@@ -60,6 +60,7 @@ function addPoints(amount) {
     data.level++;
     document.getElementById("sound-levelup").play();
     alert("🎉 Level Up! You reached Level " + data.level);
+    confettiBurst();
   }
   document.getElementById("sound-complete").play();
   updateStats();
@@ -101,6 +102,15 @@ const quotes = [
   "🔥 Success is the sum of small efforts repeated!",
   "💡 Stay positive, work hard, make it happen!",
 ];
+
+function confettiBurst() {
+  confetti({
+    particleCount: 120,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+}
+
 
 function renderTasks() {
   const taskList = document.getElementById("taskList");
@@ -163,6 +173,11 @@ function deleteTask(i) {
   document.getElementById("sound-delete").play();
   renderTasks();
 }
+
+if ([7, 30, 100].includes(data.streak)) {
+    alert(`🔥 ${data.streak}-Day Streak!`);
+    confettiBurst();
+  }
 
 // ---------------- Focus Timer ----------------
 let timerunner = false;
