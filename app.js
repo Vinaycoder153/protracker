@@ -956,6 +956,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initialize cloud sync (optional)
   await initializeCloudSync();
 
+  // Initialize Productivity Coach
+  if (typeof initializeCoach === 'function') {
+    initializeCoach();
+  }
+
   // Add keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.id === 'taskInput') {
@@ -1012,6 +1017,11 @@ async function initializeCloudSync() {
         renderTasks();
         updateChart();
         refreshInsights();
+
+        // Initialize coach with synced data
+        if (typeof initializeCoach === 'function') {
+          initializeCoach();
+        }
       }
     }
   } catch (error) {

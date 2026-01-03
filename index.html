@@ -39,11 +39,14 @@
       </div>
     </header>
 
-    <!-- AI Insights Panel -->
-    <div class="ai-insights glass-card">
-      <div class="insight-header">
-        <h3>🧠 AI Insights</h3>
-        <button class="refresh-btn" onclick="refreshInsights()" aria-label="Refresh insights">
+    <!-- Advanced Productivity Coach Panel -->
+    <div class="ai-coach glass-card">
+      <div class="coach-header">
+        <div>
+          <h3>🎯 Productivity Coach</h3>
+          <span id="coachMode" class="coach-mode">Accountability Mode</span>
+        </div>
+        <button class="refresh-btn" onclick="refreshCoachFeedback()" aria-label="Refresh coach feedback">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
             <path
@@ -51,19 +54,62 @@
           </svg>
         </button>
       </div>
-      <div id="aiInsights" class="insights-content">
+
+      <!-- Productivity Score -->
+      <div class="productivity-score">
+        <div class="score-circle">
+          <svg class="score-ring" width="120" height="120">
+            <defs>
+              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f5ff" />
+                <stop offset="50%" stop-color="#00ff87" />
+                <stop offset="100%" stop-color="#ff00f5" />
+              </linearGradient>
+            </defs>
+            <circle class="score-ring-bg" cx="60" cy="60" r="50" />
+            <circle id="scoreRing" class="score-ring-progress" cx="60" cy="60" r="50" />
+          </svg>
+          <div class="score-content">
+            <div id="productivityScore" class="score-value">0</div>
+            <div class="score-label">Score</div>
+          </div>
+        </div>
+        <div class="score-breakdown">
+          <div class="breakdown-item">
+            <span class="breakdown-label">Completion</span>
+            <span id="scoreCompletion" class="breakdown-value">0</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">Consistency</span>
+            <span id="scoreConsistency" class="breakdown-value">0</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">Focus</span>
+            <span id="scoreFocus" class="breakdown-value">0</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">Output</span>
+            <span id="scoreOutput" class="breakdown-value">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coach Message -->
+      <div id="coachMessage" class="coach-message">
+        <p>Analyzing your productivity patterns...</p>
+      </div>
+
+      <!-- Coach Insights -->
+      <div id="coachInsights" class="coach-insights">
         <div class="insight-item">
           <span class="insight-icon">📊</span>
-          <p id="productivityInsight">Analyzing your patterns...</p>
+          <p>Complete your first task to get personalized insights</p>
         </div>
-        <div class="insight-item">
-          <span class="insight-icon">🎯</span>
-          <p id="focusInsight">Calculating optimal focus time...</p>
-        </div>
-        <div class="insight-item">
-          <span class="insight-icon">⚡</span>
-          <p id="actionInsight">Preparing recommendations...</p>
-        </div>
+      </div>
+
+      <!-- Coach Action -->
+      <div id="coachAction" class="coach-action">
+        → Start by adding your first task and completing it
       </div>
     </div>
 
@@ -243,6 +289,10 @@
 
   <!-- Supabase Configuration -->
   <script src="supabase-config.js"></script>
+
+  <!-- AI Productivity Coach -->
+  <script src="ai-coach.js"></script>
+  <script src="coach-integration.js"></script>
 
   <!-- Scripts -->
   <script src="app.js"></script>
