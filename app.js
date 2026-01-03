@@ -961,6 +961,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     initializeCoach();
   }
 
+  // Initialize Solo-Leveling Player System
+  if (typeof initializePlayerSystem === 'function') {
+    initializePlayerSystem();
+  }
+
   // Add keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.id === 'taskInput') {
