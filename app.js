@@ -829,39 +829,27 @@ function updateChart() {
   dm.save();
 }
 
-function updateChartInsights() {
-  const peakDay = ai.getPeakDay();
-  const avgScore = (dm.data.productivity.reduce((a, b) => a + b, 0) / 7).toFixed(1);
-  const prediction = ai.predictTomorrow();
-
-  document.getElementById('peakDay').textContent = peakDay;
-  document.getElementById('avgScore').textContent = avgScore;
-  document.getElementById('prediction').textContent = prediction;
-}
+// function updateChartInsights() {
+//   // Legacy function replaced by Coach System
+// }
 
 // ============================================
 // AI INSIGHTS
 // ============================================
 
-function refreshInsights() {
-  const insights = ai.generateInsights();
-  const insightsContent = document.getElementById('aiInsights');
+// function refreshInsights() {
+//   // Legacy function replaced by Coach System
+// }
+// insights.forEach((insight, index) => {
+//   setTimeout(() => {
+//     const insightDiv = document.createElement('div');
+//     insightDiv.className = 'insight-item fade-in';
+//     // ...
+//     insightsContent.appendChild(insightDiv);
+//   }, index * 150);
+// });
+// showNotification('🧠 Insights Updated', 'AI analysis complete', 'info');
 
-  insightsContent.innerHTML = '';
-  insights.forEach((insight, index) => {
-    setTimeout(() => {
-      const insightDiv = document.createElement('div');
-      insightDiv.className = 'insight-item fade-in';
-      insightDiv.innerHTML = `
-        <span class="insight-icon">${insight.icon}</span>
-        <p>${insight.text}</p>
-      `;
-      insightsContent.appendChild(insightDiv);
-    }, index * 150);
-  });
-
-  showNotification('🧠 Insights Updated', 'AI analysis complete', 'info');
-}
 
 // ============================================
 // NOTIFICATIONS & FEEDBACK
@@ -1021,12 +1009,7 @@ async function initializeCloudSync() {
         updateStats();
         renderTasks();
         updateChart();
-        refreshInsights();
-
-        // Initialize coach with synced data
-        if (typeof initializeCoach === 'function') {
-          initializeCoach();
-        }
+        // refreshInsights(); // LEGACY
       }
     }
   } catch (error) {
@@ -1063,7 +1046,7 @@ async function manualSyncFromCloud() {
     updateStats();
     renderTasks();
     updateChart();
-    refreshInsights();
+    // refreshInsights(); // Legacy
   } else {
     showNotification('❌ Sync Failed', 'Could not download from cloud', 'warning');
   }

@@ -288,7 +288,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Supabase Configuration -->
+  <!-- Supabase Configuration -->
   <script src="supabase-config.js"></script>
+
+  <!-- Core App Logic -->
+  <script src="app.js"></script>
 
   <!-- AI Productivity Coach -->
   <script src="ai-coach.js"></script>
@@ -297,26 +301,6 @@
   <!-- Solo-Leveling Player System -->
   <script src="player-system.js"></script>
   <script src="player-integration.js"></script>
-
-  <!-- Scripts -->
-  <script src="app.js"></script>
-
-  <!-- AI Chat Integration -->
-  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-  <script type="module">
-    import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";
-
-    const chat = createChat({
-      webhookUrl: "https://codertest32.app.n8n.cloud/webhook/87e62600-047c-43e3-9f55-3bd8c1e71e33/chat",
-      initialMessages: [
-        "👋 Hi! I'm your AI productivity assistant. I can help you optimize your workflow, suggest focus times, and provide personalized insights."
-      ],
-    });
-
-    document.getElementById('aiChatToggle').addEventListener('click', () => {
-      chat.open();
-    });
-  </script>
 </body>
 
 </html>

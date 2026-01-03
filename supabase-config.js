@@ -5,7 +5,7 @@
 // Supabase connection details
 const SUPABASE_CONFIG = {
     url: 'https://hhbyaxnupcmgukjugfus.supabase.co',
-    anonKey: 'YOUR_SUPABASE_ANON_KEY', // Get this from Supabase Dashboard > Settings > API
+    anonKey: 'sb_publishable_KEeW0yMb290X2zIDUDr1iw_EkmdbK2I', // Get this from Supabase Dashboard > Settings > API
 
     // Database connection (for reference)
     // postgresql://postgres:[YOUR-PASSWORD]@db.hhbyaxnupcmgukjugfus.supabase.co:5432/postgres

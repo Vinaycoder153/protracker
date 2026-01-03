@@ -48,10 +48,14 @@ class PlayerSystem {
 
     addXP(amount, reason = '') {
         const player = this.dm.data.player;
+
+        // Anti-Grinding Protection
+        const grindPenalty = this.checkAntiGrind ? this.checkAntiGrind() : 1.0;
+
         const streakMultiplier = 1 + (this.dm.data.streak * 0.1); // +10% per streak day
         const rankMultiplier = this.getRankMultiplier();
 
-        const totalXP = Math.floor(amount * streakMultiplier * rankMultiplier);
+        const totalXP = Math.floor(amount * streakMultiplier * rankMultiplier * grindPenalty);
         player.xp += totalXP;
 
         // Check for level up
@@ -63,10 +67,26 @@ class PlayerSystem {
         this.dm.save();
         return {
             gained: totalXP,
-            multiplier: streakMultiplier * rankMultiplier,
+            multiplier: streakMultiplier * rankMultiplier * grindPenalty,
             reason,
             leveledUp: player.xp >= xpRequired
         };
+    }
+
+    // ============================================
+    // ANTI-GRINDING MECHANISM
+    // ============================================
+
+    checkAntiGrind() {
+        const now = Date.now();
+        const lastTime = this.lastXPGainTime || 0;
+        this.lastXPGainTime = now;
+
+        // If less than 1 minute since last Gain, apply penalty
+        if (now - lastTime < 60000) {
+            return 0.5; // 50% XP penalty for spamming
+        }
+        return 1.0;
     }
 
     levelUp() {
@@ -118,23 +138,113 @@ class PlayerSystem {
         const player = this.dm.data.player;
         const requirements = this.getRankRequirements();
         const ranks = ['E', 'D', 'C', 'B', 'A', 'S'];
+        const rankIndices = { E: 0, D: 1, C: 2, B: 3, A: 4, S: 5 };
 
+        // Check Promotion
         for (let i = ranks.length - 1; i >= 0; i--) {
             const rank = ranks[i];
             const req = requirements[rank];
 
             if (player.level >= req.level && player.stats.discipline >= req.discipline) {
-                if (player.rank !== rank) {
+                if (rankIndices[rank] > rankIndices[player.rank]) {
                     player.rank = rank;
                     player.title = this.getRankTitle(rank);
                     this.dm.save();
-                    return { promoted: true, newRank: rank };
+                    return { type: 'promotion', newRank: rank };
                 }
                 break;
             }
         }
 
-        return { promoted: false };
+        // Check Demotion (Buffer zone: -5 stat points allowed before demotion)
+        const currentRankReq = requirements[player.rank];
+        if (player.level < currentRankReq.level || player.stats.discipline < currentRankReq.discipline - 5) {
+            if (player.rank !== 'E') {
+                const prevRankIndex = rankIndices[player.rank] - 1;
+                const newRank = ranks[prevRankIndex];
+                player.rank = newRank;
+                player.title = this.getRankTitle(newRank);
+                this.dm.save();
+                return { type: 'demotion', newRank: newRank };
+            }
+        }
+
+        return { type: 'none' };
+    }
+
+    // ============================================
+    // BOSS BATTLE SYSTEM
+    // ============================================
+
+    checkBossBattle() {
+        const player = this.dm.data.player;
+        const now = new Date();
+
+        // Trigger Boss Battle every Sunday or if tasks pile up (>15)
+        const isSunday = now.getDay() === 0;
+        const isOverloaded = this.dm.data.tasks.filter(t => !t.done).length > 15;
+
+        const hasActiveBoss = player.dailyQuests.some(q => q.type === 'boss');
+
+        if ((isSunday || isOverloaded) && !hasActiveBoss) {
+            this.triggerBossBattle(isOverloaded ? 'overload' : 'weekly');
+            return true;
+        }
+        return false;
+    }
+
+    triggerBossBattle(type) {
+        const player = this.dm.data.player;
+
+        const bossConfigs = {
+            weekly: {
+                title: '☠️ WEEKLY BOSS: THE TIME EATER',
+                description: 'Prove your consistency. Clear 5 tasks today.',
+                target: 5,
+                xpReward: 500,
+                statReward: { discipline: 10, focus: 10 }
+            },
+            overload: {
+                title: '👿 WORLD BOSS: THE MOUNTAIN OF CHAOS',
+                description: 'You are overwhelmed. Clear 3 High Priority tasks to survive.',
+                target: 3,
+                xpReward: 1000,
+                statReward: { discipline: 20, consistency: 20 }
+            }
+        };
+
+        const config = bossConfigs[type];
+        if (!config) return;
+
+        player.dailyQuests.unshift({
+            type: 'boss',
+            bossType: type,
+            title: config.title,
+            task: config.description,
+            targetCount: config.target,
+            currentProgress: 0,
+            xpReward: config.xpReward,
+            statReward: config.statReward,
+            isBoss: true
+        });
+
+        this.dm.save();
+    }
+
+    updateBossProgress(amount = 1) {
+        const player = this.dm.data.player;
+        const bossQuestIndex = player.dailyQuests.findIndex(q => q.type === 'boss');
+
+        if (bossQuestIndex !== -1) {
+            const quest = player.dailyQuests[bossQuestIndex];
+            quest.currentProgress += amount;
+
+            if (quest.currentProgress >= quest.targetCount) {
+                return this.completeQuest(bossQuestIndex);
+            }
+            this.dm.save();
+        }
+        return null;
     }
 
     getRankTitle(rank) {
@@ -157,12 +267,20 @@ class PlayerSystem {
         const player = this.dm.data.player;
         const tasks = this.dm.data.tasks.filter(t => !t.done);
 
-        // Clear old quests
-        player.dailyQuests = [];
+        // Check for Boss Battle first (overrides normal quests if triggered)
+        if (this.checkBossBattle()) {
+            // Boss battle triggered, it adds itself to dailyQuests
+            // We might still want side quests? Let's keep side quests with boss.
+        }
+
+        // Clear old quests (except active Boss Quest)
+        player.dailyQuests = player.dailyQuests.filter(q => q.type === 'boss' && q.currentProgress < q.targetCount);
+
+        // ... (rest of generation logic)
 
         // Main Quest (highest priority task)
         const highPriorityTasks = tasks.filter(t => t.priority === 'high');
-        if (highPriorityTasks.length > 0) {
+        if (highPriorityTasks.length > 0 && !player.dailyQuests.some(q => q.type === 'main')) {
             player.dailyQuests.push({
                 type: 'main',
                 title: '⚔️ MAIN QUEST',
@@ -174,20 +292,22 @@ class PlayerSystem {
         }
 
         // Side Quests (2-4 medium/low priority tasks)
-        const otherTasks = tasks.filter(t => t.priority !== 'high').slice(0, 4);
-        otherTasks.forEach((task, i) => {
-            player.dailyQuests.push({
-                type: 'side',
-                title: `🎯 SIDE QUEST ${i + 1}`,
-                task: task.text,
-                taskIndex: this.dm.data.tasks.indexOf(task),
-                xpReward: 50,
-                statReward: { consistency: 2 }
+        if (player.dailyQuests.filter(q => q.type === 'side').length === 0) {
+            const otherTasks = tasks.filter(t => t.priority !== 'high').slice(0, 4);
+            otherTasks.forEach((task, i) => {
+                player.dailyQuests.push({
+                    type: 'side',
+                    title: `🎯 SIDE QUEST ${i + 1}`,
+                    task: task.text,
+                    taskIndex: this.dm.data.tasks.indexOf(task),
+                    xpReward: 50,
+                    statReward: { consistency: 2 }
+                });
             });
-        });
+        }
 
         // Emergency Quest (if falling behind)
-        if (this.dm.data.completedToday === 0 && new Date().getHours() > 14) {
+        if (this.dm.data.completedToday === 0 && new Date().getHours() > 14 && !player.dailyQuests.some(q => q.type === 'emergency')) {
             player.dailyQuests.unshift({
                 type: 'emergency',
                 title: '🚨 EMERGENCY QUEST',
@@ -200,6 +320,62 @@ class PlayerSystem {
         this.dm.save();
         return player.dailyQuests;
     }
+
+    // ...
+
+    handleTaskSkip() {
+        const player = this.dm.data.player;
+        player.consecutiveFailures++;
+        player.warnings++;
+
+        // XP penalty
+        const penalty = Math.floor(player.xp * 0.1);
+        player.xp = Math.max(0, player.xp - penalty);
+
+        // Stat reduction
+        player.stats.discipline = Math.max(0, player.stats.discipline - 5);
+        player.stats.consistency = Math.max(0, player.stats.consistency - 3);
+        player.stats.energy = Math.max(0, player.stats.energy - 10);
+
+        // Check for Demotion
+        const demotionCheck = this.checkRankPromotion();
+
+        this.dm.save();
+
+        return {
+            penalty,
+            warnings: player.warnings,
+            failures: player.consecutiveFailures,
+            statsLost: { discipline: -5, consistency: -3, energy: -10 },
+            demotion: demotionCheck.type === 'demotion' ? demotionCheck : null
+        };
+    }
+
+    handleStreakBreak() {
+        const player = this.dm.data.player;
+
+        // Massive XP penalty
+        const penalty = Math.floor(player.xp * 0.3);
+        player.xp = Math.max(0, player.xp - penalty);
+
+        // Stat reduction
+        player.stats.discipline = Math.max(0, player.stats.discipline - 15);
+        player.stats.consistency = Math.max(0, player.stats.consistency - 20);
+
+        // Check for Demotion
+        const demotionCheck = this.checkRankPromotion();
+
+        this.dm.save();
+
+        return {
+            penalty,
+            statsLost: { discipline: -15, consistency: -20 },
+            demotion: demotionCheck.type === 'demotion' ? demotionCheck : null
+        };
+    }
+
+    // Side Quests (2-4 medium/low priority tasks)
+
 
     completeQuest(questIndex) {
         const player = this.dm.data.player;

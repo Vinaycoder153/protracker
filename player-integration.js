@@ -263,8 +263,24 @@ function showSystemMessage(type, data) {
 }
 
 function showQuestComplete(result) {
-    const message = playerSystem.getSystemMessage('questComplete', result);
-    showSystemMessage('success', message);
+    // Custom message for Boss Battles
+    if (result.quest.isBoss) {
+        const message = {
+            title: `☠️ BOSS DEFEATED: ${result.quest.title}`,
+            message: 'You have conquered the impossible.',
+            details: [
+                `XP Gained: +${result.xpGained} (Massive Bonus)`,
+                `Discipline: +${result.statsGained.discipline}`,
+                `Stats Increased significantly`
+            ],
+            action: '→ The world is safe... for now.'
+        };
+        showSystemMessage('success', message);
+        playSound('levelup'); // Epic sound
+    } else {
+        const message = playerSystem.getSystemMessage('questComplete', result);
+        showSystemMessage('success', message);
+    }
 
     // Play level up sound if leveled up
     if (result.leveledUp) {
@@ -273,12 +289,20 @@ function showQuestComplete(result) {
             const levelUpMsg = playerSystem.getSystemMessage('levelUp');
             showSystemMessage('success', levelUpMsg);
 
-            // Check for rank promotion
+            // Check for rank promotion/demotion
             const rankCheck = playerSystem.checkRankPromotion();
-            if (rankCheck.promoted) {
+            if (rankCheck.type === 'promotion') {
                 setTimeout(() => {
                     const rankMsg = playerSystem.getSystemMessage('rankPromotion', rankCheck);
                     showSystemMessage('success', rankMsg);
+                }, 2000);
+            } else if (rankCheck.type === 'demotion') {
+                setTimeout(() => {
+                    showSystemMessage('error', {
+                        title: `💀 RANK DEMOTION: ${rankCheck.newRank} RANK`,
+                        message: 'Your discipline has faltered. You have been demoted.',
+                        action: '→ Prove your worth to regain your status.'
+                    });
                 }, 2000);
             }
         }, 1500);
@@ -348,6 +372,15 @@ window.toggleTask = function (index) {
     // If task was just completed
     if (!wasDone && task.done) {
         completeQuestByTask(index);
+
+        // Also update Boss Progress if active
+        if (playerSystem) {
+            const bossResult = playerSystem.updateBossProgress(1);
+            if (bossResult) {
+                showQuestComplete(bossResult);
+                updatePlayerUI();
+            }
+        }
     }
 
     // If task was uncompleted (undone)
