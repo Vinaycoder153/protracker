@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-powered productivity app with smart automation and predictive insights" />
+  <title>Boostly AI - Next-Gen Productivity</title>
+
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- Animated Background -->
+  <canvas id="particles"></canvas>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Header with AI Status -->
+    <header class="app-header">
+      <div class="header-content">
+        <h1 class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">Boostly AI</span>
+          <span class="ai-badge">AI-Powered</span>
+        </h1>
+        <div class="ai-status">
+          <div class="ai-indicator pulse"></div>
+          <span id="aiStatus">AI Active</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- AI Insights Panel -->
+    <div class="ai-insights glass-card">
+      <div class="insight-header">
+        <h3>🧠 AI Insights</h3>
+        <button class="refresh-btn" onclick="refreshInsights()" aria-label="Refresh insights">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
+            <path
+              d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+          </svg>
+        </button>
+      </div>
+      <div id="aiInsights" class="insights-content">
+        <div class="insight-item">
+          <span class="insight-icon">📊</span>
+          <p id="productivityInsight">Analyzing your patterns...</p>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">🎯</span>
+          <p id="focusInsight">Calculating optimal focus time...</p>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">⚡</span>
+          <p id="actionInsight">Preparing recommendations...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="stats-grid">
+      <div class="stat-card glass-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-content">
+          <div class="stat-label">Points</div>
+          <div class="stat-value" id="points">0</div>
+          <div class="stat-trend" id="pointsTrend">+0 today</div>
+        </div>
+      </div>
+
+      <div class="stat-card glass-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+          <div class="stat-label">Streak</div>
+          <div class="stat-value" id="streak">0</div>
+          <div class="stat-trend">days</div>
+        </div>
+      </div>
+
+      <div class="stat-card glass-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-content">
+          <div class="stat-label">Level</div>
+          <div class="stat-value" id="level">1</div>
+          <div class="stat-progress">
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <span class="progress-text" id="expText">0/100 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card glass-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <div class="stat-label">Focus Score</div>
+          <div class="stat-value" id="focusScore">0</div>
+          <div class="stat-trend" id="focusTrend">AI Predicted</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div id="badges" class="badges-container"></div>
+
+    <!-- Smart Task Manager -->
+    <div class="task-manager glass-card">
+      <div class="section-header">
+        <h2>📋 Smart Task Manager</h2>
+        <div class="task-filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="high">High Priority</button>
+          <button class="filter-btn" data-filter="pending">Pending</button>
+          <button class="filter-btn" data-filter="done">Done</button>
+        </div>
+      </div>
+
+      <div class="task-input-container">
+        <input type="text" id="taskInput" placeholder="What needs to be done? AI will categorize it..."
+          aria-label="Task input" class="smart-input" />
+        <button onclick="addTask()" class="add-task-btn" aria-label="Add task">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+          </svg>
+          Add Task
+        </button>
+      </div>
+
+      <div id="taskList" class="task-list"></div>
+
+      <div class="task-summary">
+        <span id="taskStats">0 tasks • 0 completed today</span>
+      </div>
+    </div>
+
+    <!-- Adaptive Focus Timer -->
+    <div class="focus-timer glass-card">
+      <div class="section-header">
+        <h2>⏳ Adaptive Focus Timer</h2>
+        <div class="timer-presets">
+          <button class="preset-btn" onclick="setTimerPreset(15)">15m</button>
+          <button class="preset-btn active" onclick="setTimerPreset(25)">25m</button>
+          <button class="preset-btn" onclick="setTimerPreset(45)">45m</button>
+          <button class="preset-btn" onclick="setTimerPreset(60)">60m</button>
+        </div>
+      </div>
+
+      <div class="timer-display">
+        <svg class="timer-ring" width="200" height="200">
+          <circle class="timer-ring-bg" cx="100" cy="100" r="90" />
+          <circle id="timerRing" class="timer-ring-progress" cx="100" cy="100" r="90" />
+        </svg>
+        <div class="timer-content">
+          <div id="timer" class="timer-text">25:00</div>
+          <div id="timerPhase" class="timer-phase">Ready to focus</div>
+        </div>
+      </div>
+
+      <div class="timer-controls">
+        <button onclick="startTimer()" class="timer-btn primary" aria-label="Start timer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Start
+        </button>
+        <button onclick="pauseTimer()" class="timer-btn" aria-label="Pause timer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+          </svg>
+          Pause
+        </button>
+        <button onclick="resetTimer()" class="timer-btn" aria-label="Reset timer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+          </svg>
+          Reset
+        </button>
+      </div>
+
+      <div class="timer-suggestion">
+        <span id="timerSuggestion">💡 AI suggests: Start with a 25-minute focus session</span>
+      </div>
+    </div>
+
+    <!-- Productivity Analytics -->
+    <div class="chart-section glass-card">
+      <div class="section-header">
+        <h2>📈 Productivity Analytics</h2>
+        <div class="chart-controls">
+          <button class="chart-btn active" data-period="week">Week</button>
+          <button class="chart-btn" data-period="month">Month</button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="productivityChart"></canvas>
+      </div>
+      <div class="chart-insights">
+        <div class="chart-insight">
+          <span class="insight-label">Peak Performance:</span>
+          <span id="peakDay">Wednesday</span>
+        </div>
+        <div class="chart-insight">
+          <span class="insight-label">Avg Daily Score:</span>
+          <span id="avgScore">0</span>
+        </div>
+        <div class="chart-insight">
+          <span class="insight-label">Predicted Tomorrow:</span>
+          <span id="prediction">Calculating...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Chat Assistant -->
+    <button id="aiChatToggle" class="ai-chat-toggle" aria-label="Toggle AI assistant">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Audio Feedback -->
+  <audio id="sound-complete" src="https://assets.mixkit.co/sfx/download/mixkit-game-level-completed-2059.wav"></audio>
+  <audio id="sound-levelup"
+    src="https://assets.mixkit.co/sfx/download/mixkit-extra-bonus-in-a-video-game-2045.wav"></audio>
+  <audio id="sound-delete"
+    src="https://assets.mixkit.co/sfx/download/mixkit-retro-arcade-casino-notification-211.wav"></audio>
+  <audio id="sound-tick" src="https://assets.mixkit.co/sfx/download/mixkit-clock-tick-1045.wav"></audio>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Supabase Configuration -->
+  <script src="supabase-config.js"></script>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+
+  <!-- AI Chat Integration -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+  <script type="module">
+    import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";
+
+    const chat = createChat({
+      webhookUrl: "https://codertest32.app.n8n.cloud/webhook/87e62600-047c-43e3-9f55-3bd8c1e71e33/chat",
+      initialMessages: [
+        "👋 Hi! I'm your AI productivity assistant. I can help you optimize your workflow, suggest focus times, and provide personalized insights."
+      ],
+    });
+
+    document.getElementById('aiChatToggle').addEventListener('click', () => {
+      chat.open();
+    });
+  </script>
+</body>
+
+</html>
